@@ -14,8 +14,8 @@ async function fetchAlerts() {
       headers: { 'User-Agent': 'EC2-WeatherBot/1.0' }
     });
     return response.data.features.filter(alert => 
-  ['Tornado', 'Severe Thunderstorm'].includes(alert.properties.event)
-) //
+      ['Tornado', 'Severe Thunderstorm'].includes(alert.properties.event)
+    ); // Parenthesis moved here
   } catch (error) {
     console.error('API Error:', error.message);
     return [];
