@@ -2,9 +2,10 @@ const axios = require('axios');
 const { exec } = require('child_process');
 
 // Configuration
-const CONFIG = {
+const TWITCH_CONFIG = {
   NWS_API_URL: 'https://api.weather.gov/alerts/active',
-  TIKTOK_RTMP: 'rtmp://your_stream_key' // Replace with your TikTok key
+  rtmp_url: "rtmp://live.twitch.tv/app",
+  stream_key: "live_146048713_IuJW20r1igk6CMUke2G1BsmMBkF0kvf" // Your Twitch key here
 };
 
 async function fetchAlerts() {
@@ -22,10 +23,10 @@ async function fetchAlerts() {
 
 function streamAlert(alert) {
   const ffmpegCmd = `
-    ffmpeg -f lavfi -i color=c=red:s=1080x1920:d=10 \
-    -vf "drawtext=text='${alert.properties.headline.replace(/'/g, "'\\''")}':
-          fontsize=48:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2" \
-    -c:v libx264 -preset ultrafast -f flv ${CONFIG.TIKTOK_RTMP}
+    ffmpeg -f lavfi -i color=c=red:s=1280x720:d=10 \
+-vf "drawtext=text='${alert_text}':fontsize=24:box=1:boxcolor=black@0.5:x=(w-text_w)/2:y=(h-text_h)/2" \
+-c:v libx264 -preset veryfast -tune zerolatency -g 60 -b:v 3000k -maxrate 3000k -bufsize 6000k \
+-f flv "${TWITCH_CONFIG.rtmp_url}/${TWITCH_CONFIG.stream_key}"
   `;
   exec(ffmpegCmd);
 }
